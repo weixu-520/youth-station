@@ -1,0 +1,26 @@
+syntax = "v1"
+import "base.api"
+import "station.api"
+import "application.api"
+
+@server(
+    prefix: /api/v1
+    jwt: Auth
+    group: admin
+)
+service gateway-api {
+    @handler adminGetApplicationList
+    post /admin/application/list (ApplicationListRequest) returns (BaseResponse)
+
+    @handler auditApplication
+    post /admin/application/audit (AuditRequest) returns (BaseResponse)
+
+    @handler adminGetStationList
+    post /admin/station/list (StationListRequest) returns (BaseResponse)
+
+    @handler adminUpdateStation
+    put /admin/station/:stationId (StationInfo) returns (BaseResponse)
+
+    @handler adminGetDashboard
+    get /admin/dashboard returns (BaseResponse)
+}

@@ -1,0 +1,15 @@
+Name: gateway-api
+Host: 0.0.0.0
+Port: 8888
+# 1. JWT 认证（用于验证 token）
+Auth:
+ AccessSecret: "/gBaeQgf+BdXyVo69mobe+DZaFdudz6x61yAeJGDAv8="
+ AccessExpire: 86400
+#  2. Redis（存储验证码、限流）
+Redis:
+ Addr: "127.0.0.1:6379"
+ Password: ""
+ DB: 0
+#  3. MySQL（存储用户数据）
+Mysql: 
+  DataSource: "root:123456@tcp(127.0.0.1:3306)/youth_station?charset=utf8mb4&parseTime=True&loc=Local"

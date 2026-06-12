@@ -1,0 +1,23 @@
+syntax = "v1"
+
+// ==================== 全局类型定义 ====================
+// 通用响应结构
+type BaseResponse {
+    Code    int32       `json:"code"`     // 业务状态码：0-成功，其他-失败
+    Message string      `json:"message"`  // 状态描述信息
+    Data    interface{} `json:"data"`     // 响应数据
+}
+
+// 分页请求参数
+type PageRequest {
+    Page     int32 `json:"page,default=1"`      // 当前页码，默认第1页
+    PageSize int32 `json:"pageSize,default=20"` // 每页条数，默认20条
+}
+
+// 分页响应数据
+type PageResponse {
+    Total    int64         `json:"total"`    // 总记录数
+    Page     int32         `json:"page"`     // 当前页码
+    PageSize int32         `json:"pageSize"` // 每页条数
+    List     []interface{} `json:"list"`     // 数据列表
+}

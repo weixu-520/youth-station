@@ -1,0 +1,117 @@
+syntax = "v1"
+import "base.api"
+
+type InterviewProof {
+    Type    int32  `json:"type"`    // 证明类型：1-面试邮件，2-截图，3-公告，4-函件
+    Content string `json:"content"` // 证明内容（URL或文字）
+    FileUrl string `json:"fileUrl"` // 证明文件URL
+}
+
+type ApplicationRequest {
+    StationId     int64           `json:"stationId"`               // 申请的驿站ID
+    CheckinDate   string          `json:"checkinDate"`             // 计划入住日期（YYYY-MM-DD）
+    CheckoutDate  string          `json:"checkoutDate"`            // 计划退房日期（最多7天后）
+    VisitPurpose  int32           `json:"visitPurpose"`            // 来访目的：1-求职，2-创业，3-研学
+    InterviewInfo *InterviewProof `json:"interviewInfo,optional"`  // 面试通知证明（求职时必填）
+    BusinessPlan  string          `json:"businessPlan,optional"`   // 创业计划简介（创业时必填）
+    Remark        string          `json:"remark,optional"`         // 备注说明
+}
+
+type ApplyResponse {
+    ApplicationId int64  `json:"applicationId"` // 申请ID
+    Status        int32  `json:"status"`        // 申请状态：0-待审核
+    Message       string `json:"message"`       // 提示信息
+}
+
+type ApplicationRecord {
+    ApplicationId  int64   `json:"applicationId"`  // 申请ID
+    UserId         int64   `json:"userId"`         // 申请人ID
+    UserName       string  `json:"userName"`       // 申请人姓名
+    StationId      int64   `json:"stationId"`      // 驿站ID
+    StationName    string  `json:"stationName"`    // 驿站名称
+    CheckinDate    string  `json:"checkinDate"`    // 计划入住日期
+    CheckoutDate   string  `json:"checkoutDate"`   // 计划退房日期
+    Status         int32   `json:"status"`         // 申请状态
+    StatusDesc     string  `json:"statusDesc"`     // 状态描述
+    VisitPurpose   int32   `json:"visitPurpose"`   // 来访目的
+    RejectReason   string  `json:"rejectReason"`   // 拒绝原因（状态为拒绝时有值）
+    DepositAmount  int64   `json:"depositAmount"`  // 押金金额（分）
+    DepositStatus  int32   `json:"depositStatus"`  // 押金状态：0-未缴纳，1-已缴纳，2-已退还
+    CheckinAt      int64   `json:"checkinAt"`      // 实际入住时间戳
+    CheckoutAt     int64   `json:"checkoutAt"`     // 实际退房时间戳
+    AppliedAt      int64   `json:"appliedAt"`      // 申请时间戳
+    UpdatedAt      int64   `json:"updatedAt"`      // 最后更新时间戳
+}
+
+type ApplicationListRequest {
+    PageRequest
+    Status    int32 `json:"status,optional"`    // 状态筛选（可选）
+    StationId int64 `json:"stationId,optional"` // 驿站筛选（可选）
+}
+
+type ApplicationListResponse {
+    PageResponse
+    List []ApplicationRecord `json:"list"`
+}
+
+type ApplicationDetailResponse {
+    ApplicationRecord
+    UserIdCard  string `json:"userIdCard"`  // 身份证号（脱敏）
+    UserPhone   string `json:"userPhone"`   // 联系电话
+    UserSchool  string `json:"userSchool"`  // 毕业院校
+    UserHukou   string `json:"userHukou"`   // 户籍所在地
+    AuditBy     string `json:"auditBy"`     // 审核人
+    AuditAt     int64  `json:"auditAt"`     // 审核时间戳
+}
+
+type AuditRequest {
+    ApplicationId int64  `json:"applicationId"`          // 申请ID
+    Result        int32  `json:"result"`                 // 审核结果：1-通过，2-拒绝
+    RejectReason  string `json:"rejectReason,optional"`  // 拒绝原因（拒绝时必填）
+}
+
+type PaymentNotifyRequest {
+    ApplicationId int64  `json:"applicationId"` // 申请ID
+    TradeNo       string `json:"tradeNo"`       // 支付流水号
+    Amount        int64  `json:"amount"`        // 支付金额（分）
+    PayTime       int64  `json:"payTime"`       // 支付时间戳
+}
+
+type CheckinRequest {
+    ApplicationId int64 `json:"applicationId"` // 申请ID
+}
+
+type CheckoutRequest {
+    ApplicationId int64 `json:"applicationId"` // 申请ID
+}
+
+@server(
+    prefix: /api/v1
+    jwt: Auth
+    group: application
+)
+service gateway-api {
+    @handler apply
+    post /application/apply (ApplicationRequest) returns (BaseResponse)
+
+    @handler getMyApplications
+    post /application/my-list (ApplicationListRequest) returns (BaseResponse)
+
+    @handler getApplicationDetail
+    get /application/detail/:applicationId returns (BaseResponse)
+
+    @handler cancelApplication
+    post /application/cancel/:applicationId returns (BaseResponse)
+
+    @handler paymentNotify
+    post /application/payment/notify (PaymentNotifyRequest) returns (BaseResponse)
+
+    @handler checkin
+    post /application/checkin (CheckinRequest) returns (BaseResponse)
+
+    @handler checkout
+    post /application/checkout (CheckoutRequest) returns (BaseResponse)
+
+    @handler refundDeposit
+    post /application/refund/:applicationId returns (BaseResponse)
+}
