@@ -9,6 +9,7 @@ import (
 	admin "yonth_station_backend/api/internal/handler/admin"
 	application "yonth_station_backend/api/internal/handler/application"
 	auth "yonth_station_backend/api/internal/handler/auth"
+	chat "yonth_station_backend/api/internal/handler/chat"
 	station "yonth_station_backend/api/internal/handler/station"
 	user "yonth_station_backend/api/internal/handler/user"
 	"yonth_station_backend/api/internal/svc"
@@ -116,8 +117,35 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodGet,
+				Path:    "/chat/history",
+				Handler: chat.GetHistoryHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/chat/users",
+				Handler: chat.GetUsersHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithPrefix("/api/v1"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
 				Path:    "/station/available",
 				Handler: station.GetAvailableStationsHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/station/comment",
+				Handler: station.AddCommentHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/station/comment/list",
+				Handler: station.ListCommentsHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodGet,
@@ -126,8 +154,23 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/station/like",
+				Handler: station.LikeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/station/like/count/:stationId",
+				Handler: station.GetLikeCountHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/station/list",
 				Handler: station.GetStationListHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/station/unlike",
+				Handler: station.UnlikeHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

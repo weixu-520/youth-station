@@ -3,13 +3,32 @@ Host: 0.0.0.0
 Port: 8888
 # 1. JWT 认证（用于验证 token）
 Auth:
- AccessSecret: "/gBaeQgf+BdXyVo69mobe+DZaFdudz6x61yAeJGDAv8="
- AccessExpire: 86400
-#  2. Redis（存储验证码、限流）
+  AccessSecret: "/gBaeQgf+BdXyVo69mobe+DZaFdudz6x61yAeJGDAv8="
+  AccessExpire: 86400
+# 2. Redis（存储验证码、限流）
 Redis:
- Addr: "127.0.0.1:6379"
- Password: ""
- DB: 0
-#  3. MySQL（存储用户数据）
-Mysql: 
+  Host: "127.0.0.1:6379"
+  Type: "node"
+  Password: ""
+  DB: 0
+# 3. MySQL（存储用户数据）
+Mysql:
   DataSource: "root:123456@tcp(127.0.0.1:3306)/youth_station?charset=utf8mb4&parseTime=True&loc=Local"
+# 4. 限流配置
+RateLimit:
+  Mode: "global"
+  Rate: 10
+  Burst: 20
+# 5. Kafka 日志（可选，不启用时不会报错）
+Kafka:
+  Brokers:
+    - "192.168.6.102:9092"
+    - "192.168.6.102:9093"
+  Topic: "app-logs"
+  Enabled: true
+RabbitMQ:
+  Host: "192.168.6.102"
+  Port: 5672
+  User: "admin"
+  Password: "admin123"
+  Exchange: "chat.exchange"

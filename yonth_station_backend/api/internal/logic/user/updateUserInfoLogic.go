@@ -7,7 +7,9 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"yonth_station_backend/api/gorm/model"
+	"yonth_station_backend/pkg/utils"
 
 	"yonth_station_backend/api/internal/svc"
 	"yonth_station_backend/api/internal/types"
@@ -96,7 +98,8 @@ func (l *UpdateUserInfoLogic) UpdateUserInfo(req *types.UpdateUserInfoRequest) (
 			return &types.BaseResponse{Code: 500, Message: "更新失败"}, nil
 		}
 	}
-
+	cacheKey := fmt.Sprintf("user:info:%d", userId)
+	_ = utils.DeleteCache(l.ctx, l.svcCtx.Redis, cacheKey)
 	// 5. 重新查询，返回更新后的完整用户信息
 	var updatedUser model.User
 	l.svcCtx.DB.First(&updatedUser, userId)
@@ -116,6 +119,7 @@ func (l *UpdateUserInfoLogic) UpdateUserInfo(req *types.UpdateUserInfoRequest) (
 			GraduateYear: int32(updatedUser.GraduateYear),
 			HukouCity:    updatedUser.HukouCity,
 			Status:       int32(updatedUser.Status),
+			IsAdmin:      updatedUser.IsAdmin,
 			CreatedAt:    updatedUser.CreatedAt.Unix(),
 		},
 	}, nil

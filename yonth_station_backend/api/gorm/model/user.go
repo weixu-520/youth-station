@@ -15,6 +15,7 @@ type User struct {
 	GraduateYear int       `gorm:"column:graduate_year;type:int;default:0" json:"graduateYear"`
 	HukouCity    string    `gorm:"column:hukou_city;type:varchar(64);default:''" json:"hukouCity"` // 户籍城市，格式：省+市
 	Status       int8      `gorm:"column:status;type:tinyint;default:0" json:"status"`             // 账号状态：0-正常，1-冻结
+	IsAdmin      bool      `gorm:"column:is_admin;type:tinyint(1);default:0" json:"isAdmin"`
 	LastLoginAt  int64     `gorm:"column:last_login_at;type:bigint;default:0" json:"lastLoginAt"`
 	CreatedAt    time.Time `gorm:"column:created_at;autoCreateTime" json:"createdAt"`
 	UpdatedAt    time.Time `gorm:"column:updated_at;autoUpdateTime" json:"updatedAt"`

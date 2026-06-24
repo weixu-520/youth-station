@@ -51,8 +51,8 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.BaseRe
 			logx.Errorf("查询手机号失败: %v", err)
 			return &types.BaseResponse{Code: 500, Message: "数据库查询错误"}, nil
 		}
+		phoneToStore = &req.Phone
 	}
-	phoneToStore = &req.Phone
 
 	//3. 密码加密
 	hashedPassword, err := utils.HashPassword(req.Password)
@@ -65,6 +65,7 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.BaseRe
 		UserName: req.UserName,
 		Password: hashedPassword,
 		Status:   0,
+		IsAdmin:  req.IsAdmin,
 		Phone:    phoneToStore, // 若 phoneToStore 为 nil，则数据库存储 NULL
 	}
 	if err := l.svcCtx.DB.Create(user).Error; err != nil {
@@ -72,7 +73,7 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.BaseRe
 		return &types.BaseResponse{Code: 500, Message: "注册失败"}, nil
 	}
 	//5.生成JWT token
-	token, expireAt, err := utils.GenerateToken(user.Id, l.svcCtx.Config.Auth.AccessSecret, l.svcCtx.Config.Auth.AccessExpire)
+	token, expireAt, err := utils.GenerateToken(user.Id, user.IsAdmin, l.svcCtx.Config.Auth.AccessSecret, l.svcCtx.Config.Auth.AccessExpire)
 	if err != nil {
 		logx.Errorf("生成token失败: %v", err)
 		return &types.BaseResponse{Code: 500, Message: "系统错误"}, nil
@@ -85,6 +86,7 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.BaseRe
 			ExpiresAt: expireAt,
 			UserId:    user.Id,
 			UserName:  user.UserName,
+			IsAdmin:   user.IsAdmin,
 		},
 	}, nil
 

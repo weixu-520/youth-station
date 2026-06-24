@@ -3,6 +3,16 @@
 
 package types
 
+type AddCommentRequest struct {
+	StationId int64  `json:"stationId"`
+	Content   string `json:"content"`
+	ParentId  int64  `json:"parentId,optional"`
+}
+
+type AddCommentResponse struct {
+	CommentId int64 `json:"commentId"`
+}
+
 type ApplicationDetailResponse struct {
 	ApplicationRecord
 	UserIdCard string `json:"userIdCard"` // 身份证号（脱敏）
@@ -15,8 +25,8 @@ type ApplicationDetailResponse struct {
 
 type ApplicationListRequest struct {
 	PageRequest
-	Status    int32 `json:"status,optional"`    // 状态筛选（可选）
-	StationId int64 `json:"stationId,optional"` // 驿站筛选（可选）
+	Status    *int32 `json:"status,optional"`    // 状态筛选（可选）
+	StationId int64  `json:"stationId,optional"` // 驿站筛选（可选）
 }
 
 type ApplicationListResponse struct {
@@ -32,7 +42,7 @@ type ApplicationRecord struct {
 	StationName   string `json:"stationName"`   // 驿站名称
 	CheckinDate   string `json:"checkinDate"`   // 计划入住日期
 	CheckoutDate  string `json:"checkoutDate"`  // 计划退房日期
-	Status        int32  `json:"status"`        // 申请状态
+	Status        *int32 `json:"status"`        // 申请状态
 	StatusDesc    string `json:"statusDesc"`    // 状态描述
 	VisitPurpose  int32  `json:"visitPurpose"`  // 来访目的
 	RejectReason  string `json:"rejectReason"`  // 拒绝原因（状态为拒绝时有值）
@@ -72,6 +82,10 @@ type BaseResponse struct {
 	Data    interface{} `json:"data"`    // 响应数据
 }
 
+type CancelApplicationRequest struct {
+	ApplicationId int64 `path:"applicationId"` // 申请ID，从路径参数获取
+}
+
 type CheckinRequest struct {
 	ApplicationId int64 `json:"applicationId"` // 申请ID
 }
@@ -80,10 +94,50 @@ type CheckoutRequest struct {
 	ApplicationId int64 `json:"applicationId"` // 申请ID
 }
 
+type CommentItem struct {
+	Id        int64  `json:"id"`
+	UserId    int64  `json:"userId"`
+	UserName  string `json:"userName"`
+	Content   string `json:"content"`
+	ParentId  int64  `json:"parentId"`
+	CreatedAt int64  `json:"createdAt"`
+}
+
+type CommentListRequest struct {
+	StationId int64 `form:"stationId"`
+	Page      int32 `form:"page,default=1"`
+	PageSize  int32 `form:"pageSize,default=20"`
+}
+
+type CommentListResponse struct {
+	Total int64         `json:"total"`
+	List  []CommentItem `json:"list"`
+}
+
+type GetApplicationDetailRequest struct {
+	ApplicationId int64 `path:"applicationId"` // 申请ID，从路径参数获取
+}
+
+type GetLikeCountRequest struct {
+	StationId int64 `path:"stationId"`
+}
+
+type GetStationDetailRequest struct {
+	StationId int64 `path:"stationId"` // 驿站ID，从路径参数获取
+}
+
 type InterviewProof struct {
 	Type    int32  `json:"type"`    // 证明类型：1-面试邮件，2-截图，3-公告，4-函件
 	Content string `json:"content"` // 证明内容（URL或文字）
 	FileUrl string `json:"fileUrl"` // 证明文件URL
+}
+
+type LikeRequest struct {
+	StationId int64 `json:"stationId"`
+}
+
+type LikeResponse struct {
+	Count int64 `json:"count"`
 }
 
 type LoginRequest struct {
@@ -96,6 +150,7 @@ type LoginResponse struct {
 	ExpiresAt int64  `json:"expiresAt"`
 	UserId    int64  `json:"userId"`
 	UserName  string `json:"userName"`
+	IsAdmin   bool   `json:"isAdmin"`
 }
 
 type PageRequest struct {
@@ -117,10 +172,15 @@ type PaymentNotifyRequest struct {
 	PayTime       int64  `json:"payTime"`       // 支付时间戳
 }
 
+type RefundDepositRequest struct {
+	ApplicationId int64 `path:"applicationId"` // 申请ID，从路径参数获取
+}
+
 type RegisterRequest struct {
 	UserName string `json:"userName"`
 	Password string `json:"password"`
 	Phone    string `json:"phone,optional"`
+	IsAdmin  bool   `json:"isAdmin,optional"`
 }
 
 type RegisterResponse struct {
@@ -128,6 +188,7 @@ type RegisterResponse struct {
 	ExpiresAt int64  `json:"expiresAt"`
 	UserId    int64  `json:"userId"`
 	UserName  string `json:"userName"`
+	IsAdmin   bool   `json:"isAdmin"`
 }
 
 type StationDetailResponse struct {
@@ -149,7 +210,7 @@ type StationInfo struct {
 	BusinessHours  string  `json:"businessHours"`  // 服务时间（如：8:30-18:00）
 	TotalRooms     int32   `json:"totalRooms"`     // 总房间数
 	AvailableRooms int32   `json:"availableRooms"` // 可预约房间数
-	Status         int32   `json:"status"`         // 状态：0-关闭，1-运营中
+	Status         *int32  `json:"status"`         // 状态：0-关闭，1-运营中
 	Description    string  `json:"description"`    // 驿站介绍
 	Amenities      string  `json:"amenities"`      // 配套设施（JSON字符串）
 	NearbyMetro    string  `json:"nearbyMetro"`    // 附近地铁站
@@ -189,5 +250,6 @@ type UserInfoResponse struct {
 	GraduateYear int32  `json:"graduateYear"` // 毕业年份
 	HukouCity    string `json:"hukouCity"`    // 户籍所在地城市
 	Status       int32  `json:"status"`       // 账号状态：0-正常，1-冻结
+	IsAdmin      bool   `json:"isAdmin"`      // 是否管理员
 	CreatedAt    int64  `json:"createdAt"`    // 注册时间戳
 }

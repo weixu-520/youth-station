@@ -109,10 +109,11 @@ async function handleLogin() {
   loading.value = true
   try {
     const res = await login(form.account.trim(), form.password)
-    localStorage.setItem('token', res.token)
-    localStorage.setItem('userId', res.userId)
-    localStorage.setItem('userName', res.userName)
-    router.push('/')
+    localStorage.setItem('token', res.data.token)
+    localStorage.setItem('userId', res.data.userId)
+    localStorage.setItem('userName', res.data.userName)
+    localStorage.setItem('isAdmin', res.data.isAdmin || false)
+    router.push('/home')
   } catch (e) {
     errorMsg.value = e.message || '登录失败，请重试'
   } finally {

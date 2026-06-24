@@ -3,7 +3,10 @@
 
 package config
 
-import "github.com/zeromicro/go-zero/rest"
+import (
+	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/zeromicro/go-zero/rest"
+)
 
 type Config struct {
 	rest.RestConf
@@ -12,12 +15,29 @@ type Config struct {
 		AccessExpire int64
 	}
 
-	Redis struct {
-		Addr     string
-		Password string
-		DB       int
+	Redis redis.RedisConf
+
+	RateLimit struct {
+		Mode  string `json:",default=global"` // global 或 ip
+		Rate  int    `json:",default=10"`
+		Burst int    `json:",default=20"`
 	}
+
+	Kafka struct {
+		Brokers []string
+		Topic   string
+		Enabled bool
+	}
+
 	Mysql struct {
 		DataSource string
+	}
+
+	RabbitMQ struct {
+		Host     string
+		Port     int
+		User     string
+		Password string
+		Exchange string
 	}
 }

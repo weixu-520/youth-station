@@ -10,7 +10,7 @@ type Application struct {
 	RoomId                int64     `gorm:"column:room_id;type:bigint;default:0" json:"roomId"`                                        // 实际分配的房间ID（审核通过后分配）
 	CheckinDate           string    `gorm:"column:checkin_date;type:date;not null" json:"checkinDate"`                                 // 计划入住日期（YYYY-MM-DD）
 	CheckoutDate          string    `gorm:"column:checkout_date;type:date;not null" json:"checkoutDate"`                               // 计划退房日期（YYYY-MM-DD）
-	Status                int8      `gorm:"column:status;type:tinyint;default:0;index" json:"status"`                                  // 申请状态：0-待审核，1-通过）-拒绝）-已取消，4-已入住，5-已退房
+	Status                int8      `gorm:"column:status;type:tinyint;default:0;index" json:"status"`                                  // 申请状态：0-待审核，1-通过）2-拒绝）3-已取消，4-已入住，5-已退房
 	VisitPurpose          int8      `gorm:"column:visit_purpose;type:tinyint;default:0" json:"visitPurpose"`                           // 来访目的）-求职）-创业）-研学
 	InterviewProofType    int8      `gorm:"column:interview_proof_type;type:tinyint;default:0" json:"interviewProofType"`              // 面试证明类型）-邮件）-截图）-公告）-函件
 	InterviewProofContent string    `gorm:"column:interview_proof_content;type:varchar(512);default:''" json:"interviewProofContent"`  // 证明内容文字描述
@@ -19,7 +19,7 @@ type Application struct {
 	Remark                string    `gorm:"column:remark;type:varchar(256);default:''" json:"remark"`                                  // 用户备注
 	RejectReason          string    `gorm:"column:reject_reason;type:varchar(256);default:''" json:"rejectReason"`                     // 审核拒绝原因
 	DepositAmount         int64     `gorm:"column:deposit_amount;type:bigint;default:0" json:"depositAmount"`                          // 押金金额（单位：分）
-	DepositStatus         int8      `gorm:"column:deposit_status;type:tinyint;default:0" json:"depositStatus"`                         // 押金状态：0-未缴纳，1-已缴纳，2-已退款?
+	DepositStatus         int8      `gorm:"column:deposit_status;type:tinyint;default:0" json:"depositStatus"`                         // 押金状态：0-未缴纳，1-已缴纳，2-已退款
 	CheckinAt             int64     `gorm:"column:checkin_at;type:bigint;default:0" json:"checkinAt"`                                  // 实际入住时间戳（Unix秒）
 	CheckoutAt            int64     `gorm:"column:checkout_at;type:bigint;default:0" json:"checkoutAt"`                                // 实际退房时间戳
 	AuditBy               string    `gorm:"column:audit_by;type:varchar(64);default:''" json:"auditBy"`                                // 审核人（管理员账号）

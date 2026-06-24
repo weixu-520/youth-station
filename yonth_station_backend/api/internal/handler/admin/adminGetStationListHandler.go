@@ -6,10 +6,11 @@ package admin
 import (
 	"net/http"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"yonth_station_backend/api/internal/logic/admin"
 	"yonth_station_backend/api/internal/svc"
 	"yonth_station_backend/api/internal/types"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 func AdminGetStationListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
