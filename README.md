@@ -16,6 +16,30 @@
 
 4.cd yonth_station_front在终端输入npm run dev运行前端
 
+如何把该项目制作成一个容器：
+
+1.# 在 Ubuntu 上
+
+git clone https://github.com/weixu-520/youth-station.git
+
+cd youth-station
+
+2.配置环境变量
+
+cp .env.example .env
+
+nano .env   # 改 DEEPSEEK_API_KEY 和 ARK_API_KEY 为真实值
+
+3. 一行命令启动所有服务
+
+docker compose up -d --build
+
+4. 导入知识库
+
+docker exec -it yonth-backend sh -c "cd /app/cmd/seed-knowledge && go run ."
+
+
+
 
 后端架构
 采用 go-zero 分层架构，严格遵循 Handler → Logic → Model 职责分离，ServiceContext 集中依赖注入：
