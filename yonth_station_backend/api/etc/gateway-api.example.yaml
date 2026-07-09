@@ -1,0 +1,50 @@
+Name: gateway-api
+Host: 0.0.0.0
+Port: 8888
+# 1. JWT 认证
+Auth:
+  AccessSecret: "your-jwt-secret-here"
+  AccessExpire: 86400
+# 2. Redis
+Redis:
+  Host: "127.0.0.1:6379"
+  Type: "node"
+  Password: ""
+  DB: 0
+# 3. MySQL
+Mysql:
+  DataSource: "root:password@tcp(127.0.0.1:3306)/youth_station?charset=utf8mb4&parseTime=True&loc=Local"
+# 4. 限流
+RateLimit:
+  Mode: "global"
+  Rate: 10
+  Burst: 20
+# 5. Kafka（可选，不启用则设为 false）
+Kafka:
+  Brokers:
+    - "your-kafka-host:9092"
+  Topic: "app-logs"
+  Enabled: false
+# 6. RabbitMQ（可选）
+RabbitMQ:
+  Host: "127.0.0.1"
+  Port: 5672
+  User: "guest"
+  Password: "guest"
+  Exchange: "chat.exchange"
+# 7. 智能客服
+Chat:
+  DeepSeek:
+    APIKey: "your-deepseek-api-key"
+    Model: "deepseek-chat"
+    BaseURL: "https://api.deepseek.com/v1"
+  Milvus:
+    Address: "your-milvus-host:19530"
+    Collection: "knowledge_base"
+  Embedding:
+    APIKey: "your-ark-api-key"
+    Model: "your-embedding-endpoint-id"
+    UseMultiModal: true
+  RAG:
+    TopK: 5
+    ScoreThreshold: 0.4

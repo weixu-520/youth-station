@@ -35,6 +35,8 @@ Thumbs.db
 .env
 .env.local
 *.local.yaml
+**/etc/*.yaml
+!**/etc/*.example.yaml
 
 # ==========================================
 # 日志
