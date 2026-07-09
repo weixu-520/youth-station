@@ -14,7 +14,7 @@ type Client struct {
 	userId int64
 }
 
-// readPump 从 WebSocket 读取消息，并交给 Hub 处理
+// readPump 从 WebSocket 读取消息，并交给 Hub 处理（从客户端接收消息）
 func (c *Client) readPump() {
 	defer func() {
 		c.hub.unregister <- c
@@ -34,7 +34,7 @@ func (c *Client) readPump() {
 	}
 }
 
-// writePump 从 send channel 取消息写入 WebSocket
+// writePump 从 send channel 取消息写入 WebSocket（将信息发给客户端）
 func (c *Client) writePump() {
 	ticker := time.NewTicker(30 * time.Second) // 心跳 Ping
 	defer func() {

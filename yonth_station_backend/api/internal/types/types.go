@@ -253,3 +253,25 @@ type UserInfoResponse struct {
 	IsAdmin      bool   `json:"isAdmin"`      // 是否管理员
 	CreatedAt    int64  `json:"createdAt"`    // 注册时间戳
 }
+
+// ---------- 智能客服 ----------
+type ChatRequest struct {
+	Question  string `json:"question"`
+	SessionId string `json:"sessionId,optional"`
+}
+
+type ChatResponse struct {
+	Answer    string `json:"answer"`
+	SessionId string `json:"sessionId"`
+}
+
+type KnowledgeUploadRequest struct {
+	Title    string `json:"title"`
+	Content  string `json:"content"`
+	Category string `json:"category,optional"`
+}
+
+type KnowledgeUploadResponse struct {
+	DocId   string `json:"docId"`
+	Message string `json:"message"`
+}

@@ -26,9 +26,27 @@ Kafka:
     - "192.168.6.102:9093"
   Topic: "app-logs"
   Enabled: true
+
 RabbitMQ:
   Host: "192.168.6.102"
   Port: 5672
   User: "admin"
   Password: "admin123"
   Exchange: "chat.exchange"
+
+# 智能客服配置
+Chat:
+  DeepSeek:
+    APIKey: "sk-dfd9a73f40e946b1a779f15db7160a9a"
+    Model: "deepseek-chat"
+    BaseURL: "https://api.deepseek.com/v1"
+  Milvus:
+    Address: "192.168.6.102:19530"
+    Collection: "knowledge_base"
+  Embedding:
+    APIKey: "ark-634b62b5-bda2-4d1f-aaed-06bcdfa67721-9ec91"
+    Model: "ep-m-20260707204503-w8jdh"
+    UseMultiModal: true
+  RAG:
+    TopK: 5           # 检索返回的最相关文档数量
+    ScoreThreshold: 0.4  # 相似度阈值（调低后更容易命中）

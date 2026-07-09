@@ -79,7 +79,7 @@ func (h *Hub) Run() {
 	}
 }
 
-// msgHash 计算消息的去重哈希（fromUserId + content + createdAt）
+// msgHash 计算消息的去重哈希（fromUserId + content + createdAt）//保证消息的幂等性
 func msgHash(m *Message) string {
 	s := fmt.Sprintf("%d|%s|%d", m.FromUserId, m.Content, m.CreatedAt)
 	h := sha256.Sum256([]byte(s))
@@ -100,6 +100,9 @@ func (h *Hub) isDuplicate(hash string) bool {
 // consumeRabbitMQ 持续消费 RabbitMQ 广播消息
 // 当其他实例发布消息时，会通过此函数接收并转发给本地用户
 func (h *Hub) consumeRabbitMQ() {
+	if h.mqClient == nil {
+		return // RabbitMQ 未配置，跳过
+	}
 	deliveries, err := h.mqClient.Consume()
 	if err != nil {
 		log.Printf("[RabbitMQ] Failed to start consuming: %v", err)
@@ -194,15 +197,17 @@ func (h *Hub) HandleMessage(m Message) {
 
 	data, _ := json.Marshal(m)
 
-	// 3. 本地直接投递（可靠，不依赖 RabbitMQ）
+	// 3. 本地直接投递（核心通道）
 	if m.ToUserId != 0 {
 		h.sendToUser(m.ToUserId, data)
 	} else {
 		h.sendToAdmins(data)
 	}
 
-	// 4. 同时广播到 RabbitMQ，供其他实例的在线用户接收
-	if err := h.mqClient.PublishMessage(m); err != nil {
-		log.Printf("[RabbitMQ] Publish error: %v", err)
+	// 4. 广播到 RabbitMQ（多实例场景，单实例可跳过）
+	if h.mqClient != nil {
+		if err := h.mqClient.PublishMessage(m); err != nil {
+			log.Printf("[RabbitMQ] Publish error: %v", err)
+		}
 	}
 }

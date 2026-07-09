@@ -40,4 +40,29 @@ type Config struct {
 		Password string
 		Exchange string
 	}
+	//智能客服配置M配置
+	Chat struct {
+		//LLM配置
+		DeepSeek struct {
+			APIKey  string
+			Model   string
+			BaseURL string
+		}
+		//向量数据库配置
+		Milvus struct {
+			Address    string
+			Collection string
+		}
+		//向量模型配置
+		Embedding struct {
+			APIKey        string
+			Model         string
+			UseMultiModal bool `json:",default=true"` // 多模态模型需开启
+		}
+		//增强检索配置
+		RAG struct {
+			TopK           int
+			ScoreThreshold float64
+		}
+	}
 }

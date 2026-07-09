@@ -125,6 +125,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/chat/users",
 				Handler: chat.GetUsersHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/chat/ask",
+				Handler: chat.AskHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/chat/knowledge/upload",
+				Handler: chat.UploadKnowledgeHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithPrefix("/api/v1"),
