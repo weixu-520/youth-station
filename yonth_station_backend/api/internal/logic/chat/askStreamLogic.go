@@ -68,6 +68,7 @@ func (l *AskStreamLogic) AskStream(w http.ResponseWriter, r *http.Request) {
 	for {
 		msg, err := stream.Recv()
 		if err != nil {
+			logx.Infof("[AskStream] stream ended: %v, totalChars=%d", err, len(fullAnswer))
 			break
 		}
 		if msg.Content != "" {
