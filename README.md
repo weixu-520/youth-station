@@ -42,6 +42,7 @@ docker exec -it yonth-backend sh -c "cd /app/cmd/seed-knowledge && go run ."
 
 
 后端架构
+
 采用 go-zero 分层架构，严格遵循 Handler → Logic → Model 职责分离，ServiceContext 集中依赖注入：
 
 <img width="778" height="199" alt="image" src="https://github.com/user-attachments/assets/180efcf4-02c7-41c5-84c2-7a996fd03876" />
