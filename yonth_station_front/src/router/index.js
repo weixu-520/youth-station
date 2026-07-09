@@ -15,10 +15,12 @@ const routes = [
       { path: 'applications', name: 'MyApplications', component: () => import('../views/MyApplications.vue'), meta: { title: '我的申请' } },
       { path: 'application/:id', name: 'ApplicationDetail', component: () => import('../views/ApplicationDetail.vue'), meta: { title: '申请详情' } },
       { path: 'chat', name: 'Chat', component: () => import('../views/Chat.vue'), meta: { title: '联系客服' } },
+      { path: 'smart-chat', name: 'SmartChat', component: () => import('../views/SmartChat.vue'), meta: { title: '智能客服' } },
       { path: 'profile', name: 'UserProfile', component: () => import('../views/UserProfile.vue'), meta: { title: '个人中心' } },
       { path: 'admin/dashboard', name: 'AdminDashboard', component: () => import('../views/AdminDashboard.vue'), meta: { title: '管理后台' } },
       { path: 'admin/applications', name: 'AdminApplications', component: () => import('../views/AdminApplications.vue'), meta: { title: '申请管理' } },
       { path: 'admin/stations', name: 'AdminStations', component: () => import('../views/AdminStations.vue'), meta: { title: '驿站管理' } },
+      { path: 'admin/knowledge', name: 'KnowledgeUpload', component: () => import('../views/KnowledgeUpload.vue'), meta: { title: '知识库管理' } },
     ]
   },
   { path: '/:pathMatch(.*)*', redirect: '/home' }

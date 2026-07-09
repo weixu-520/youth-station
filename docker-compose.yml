@@ -1,0 +1,128 @@
+version: "3.8"
+
+services:
+  # ========== 前端 ==========
+  frontend:
+    build: ./yonth_station_front
+    container_name: yonth-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - gateway-api
+    restart: unless-stopped
+
+  # ========== 后端 ==========
+  gateway-api:
+    build: ./yonth_station_backend/api
+    container_name: yonth-backend
+    ports:
+      - "8888:8888"
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
+      ARK_API_KEY: ${ARK_API_KEY}
+      ARK_MODEL: ${ARK_MODEL}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  # ========== MySQL ==========
+  mysql:
+    image: mysql:8.0
+    container_name: yonth-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./yonth_station_backend/test_data.sql:/docker-entrypoint-initdb.d/01_test_data.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ========== Redis ==========
+  redis:
+    image: redis:7-alpine
+    container_name: yonth-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  # ========== RabbitMQ（可选） ==========
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: yonth-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
+
+  # ========== Milvus 向量数据库 ==========
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.5
+    container_name: yonth-etcd
+    environment:
+      ETCD_AUTO_COMPACTION_MODE: revision
+      ETCD_AUTO_COMPACTION_RETENTION: "1000"
+      ETCD_QUOTA_BACKEND_BYTES: "4294967296"
+      ETCD_SNAPSHOT_COUNT: "50000"
+    volumes:
+      - etcd_data:/etcd
+    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    container_name: yonth-minio
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    volumes:
+      - minio_data:/minio_data
+    command: minio server /minio_data --console-address ":9001"
+    restart: unless-stopped
+
+  milvus:
+    image: milvusdb/milvus:v2.4.0
+    container_name: yonth-milvus
+    depends_on:
+      - etcd
+      - minio
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+    volumes:
+      - milvus_data:/var/lib/milvus
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    command: milvus run standalone
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+  redis_data:
+  rabbitmq_data:
+  etcd_data:
+  minio_data:
+  milvus_data:

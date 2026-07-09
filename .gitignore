@@ -35,6 +35,7 @@ Thumbs.db
 # ==========================================
 .env
 .env.local
+!.env.example
 *.local.yaml
 **/etc/*.yaml
 !**/etc/*.example.yaml

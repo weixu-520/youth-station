@@ -146,11 +146,11 @@ onUnmounted(() => ws?.close())
 </script>
 
 <style scoped>
-.chat-page { max-width: 800px; margin: 0 auto }
-.chat-page h2 { margin-bottom: 16px }
-.status { color: #ff9800; margin-bottom: 8px }
+.chat-page { max-width: 800px; margin: 0 auto; height: calc(100vh - 120px); display: flex; flex-direction: column }
+.chat-page h2 { margin-bottom: 16px; flex-shrink: 0 }
+.status { color: #ff9800; margin-bottom: 8px; flex-shrink: 0 }
 /* admin layout */
-.admin-layout { display: flex; gap: 0; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.04); height: 70vh }
+.admin-layout { display: flex; gap: 0; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.04); flex: 1; min-height: 0 }
 .user-sidebar { width: 180px; border-right: 1px solid #eee; padding: 16px; overflow-y: auto; flex-shrink: 0 }
 .user-sidebar h3 { font-size: 14px; margin: 0 0 12px }
 .user-item { padding: 10px 12px; cursor: pointer; border-radius: 6px; font-size: 13px; margin-bottom: 4px }
@@ -167,7 +167,7 @@ onUnmounted(() => ws?.close())
 .msg-content { padding: 8px 14px; border-radius: 14px; font-size: 14px; line-height: 1.4; word-break: break-word }
 .msg.mine .msg-content { background: #1a1a2e; color: #fff; border-bottom-right-radius: 4px }
 .msg.other .msg-content { background: #f0f0f0; color: #333; border-bottom-left-radius: 4px }
-.input-row { display: flex; gap: 8px; padding: 12px; border-top: 1px solid #eee }
+.input-row { display: flex; gap: 8px; padding: 12px; border-top: 1px solid #eee; flex-shrink: 0 }
 .input-row input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px }
 .input-row button { padding: 10px 20px; background: #1a1a2e; color: #fff; border: none; border-radius: 8px; cursor: pointer }
 .input-row button:disabled { opacity: .5 }

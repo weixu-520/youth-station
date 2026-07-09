@@ -9,6 +9,7 @@
         <router-link to="/home" class="nav-item"><span class="icon">📊</span><span v-show="!collapsed">首页</span></router-link>
         <router-link to="/home/stations" class="nav-item"><span class="icon">🏘️</span><span v-show="!collapsed">驿站列表</span></router-link>
         <router-link to="/home/applications" class="nav-item"><span class="icon">📋</span><span v-show="!collapsed">我的申请</span></router-link>
+        <router-link to="/home/smart-chat" class="nav-item"><span class="icon">🤖</span><span v-show="!collapsed">智能客服</span></router-link>
         <router-link to="/home/chat" class="nav-item"><span class="icon">💬</span><span v-show="!collapsed">联系客服</span></router-link>
         <router-link to="/home/profile" class="nav-item"><span class="icon">👤</span><span v-show="!collapsed">个人中心</span></router-link>
         <template v-if="isAdmin">
@@ -17,6 +18,7 @@
           <router-link to="/home/admin/dashboard" class="nav-item admin"><span class="icon">📈</span><span v-show="!collapsed">数据概览</span></router-link>
           <router-link to="/home/admin/applications" class="nav-item admin"><span class="icon">✅</span><span v-show="!collapsed">申请审核</span></router-link>
           <router-link to="/home/admin/stations" class="nav-item admin"><span class="icon">⚙️</span><span v-show="!collapsed">驿站管理</span></router-link>
+          <router-link to="/home/admin/knowledge" class="nav-item admin"><span class="icon">📚</span><span v-show="!collapsed">知识库管理</span></router-link>
         </template>
       </nav>
       <div class="sidebar-footer">
